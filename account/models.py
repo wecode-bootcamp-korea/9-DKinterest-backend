@@ -1,4 +1,5 @@
 from django.db import models
+
 from board_pin.models import (
     Pin,
     Board,
@@ -14,13 +15,13 @@ class Account(models.Model):
     name              = models.CharField(max_length=50)
     follower_number   = models.IntegerField(default=0)
     image_url         = models.URLField(max_length=300, null=True)
-    gender            = models.ForeignKey('Gender', on_delete=models.CASCADE)
-    region            = models.ForeignKey('Region', on_delete=models.CASCADE)
-    language          = models.ForeignKey('Language', on_delete=models.CASCADE)
-    social_platform   = models.ForeignKey('SocialPlatform', on_delete=models.CASCADE)
-    interest          = models.ManyToManyField('Interest', through='AccountInterest',related_name='interest')
-    board_pin         = models.ManyToManyField('board_pin.BoardPin', through='board_pin.AccountBoardPin', related_name='board_pin')
-    comment           = models.ManyToManyField('Comment', through='AccountCommentLike', related_name='+')
+    gender            = models.ForeignKey('Gender', on_delete=models.SET_NULL, null=True)
+    region            = models.ForeignKey('Region', on_delete=models.SET_NULL, null=True)
+    language          = models.ForeignKey('Language', on_delete=models.SET_NULL, null=True)
+    social_platform   = models.ForeignKey('SocialPlatform', on_delete=models.SET_NULL, null=True)
+    interest          = models.ManyToManyField('Interest', through='AccountInterest', related_name='user')
+    board_pin         = models.ManyToManyField('board_pin.BoardPin', through='board_pin.AccountBoardPin', related_name='user')
+    comment           = models.ManyToManyField('Comment', through='AccountCommentLike', related_name='user')
 
     class Meta:
         db_table = 'accounts'
@@ -64,14 +65,14 @@ class AccountInterest(models.Model):
         db_table = 'account_interests'
 
 class Following(models.Model):
-    from_following = models.ForeignKey('Account', on_delete=models.SET_NULL, null=True, related_name='from_following')
-    to_following   = models.ForeignKey('Account', on_delete=models.SET_NULL, null=True, related_name='to_following')
+    from_following = models.ForeignKey('Account', on_delete=models.SET_NULL, null=True, related_name='follower')
+    to_following   = models.ForeignKey('Account', on_delete=models.SET_NULL, null=True, related_name='followee')
     
     class Meta:
         db_table = 'followings'
 
 class Comment(models.Model):
-    account        = models.ForeignKey('Account', on_delete=models.CASCADE, related_name='account_comment')
+    account        = models.ForeignKey('Account', on_delete=models.CASCADE, related_name='user_comment')
     content        = models.CharField(max_length=1000)
     mother_comment = models.ForeignKey('self', max_length=1000, on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
 
@@ -79,7 +80,6 @@ class Comment(models.Model):
         db_table = 'comments'
 
 class AccountCommentLike(models.Model):
-    is_like = models.BooleanField(default=False)
     account = models.ForeignKey('Account', on_delete=models.CASCADE, null=True)
     comment = models.ForeignKey('Comment', on_delete=models.CASCADE, null=True)
 

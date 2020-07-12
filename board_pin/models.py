@@ -6,8 +6,8 @@ class Pin(models.Model):
     detail           = models.CharField(max_length=5000, null=True)
     link             = models.CharField(max_length=5000, null=True)
     interest         = models.ForeignKey('account.Interest', on_delete=models.SET_NULL, null=True)
-    internal_account = models.ForeignKey('account.Account', on_delete=models.CASCADE, null=True, related_name='internal_account')
-    external_account = models.ForeignKey('account.Account', on_delete=models.SET_NULL, null=True, related_name='external_account')
+    internal_account = models.ForeignKey('account.Account', on_delete=models.CASCADE, null=True, related_name='uploader_pin')
+    external_account = models.ForeignKey('account.Account', on_delete=models.SET_NULL, null=True, related_name='sharer_pin')
     comment          = models.ForeignKey('account.Comment', on_delete=models.SET_NULL, null=True)
 
     class Meta:
