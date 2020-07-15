@@ -23,6 +23,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = my_settings.SECRET['secret']
 
+ALGORITHM = my_settings.ALGORITHM
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -36,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'account',
+    'main_page',
+    'board_pin',
 ]
 
 MIDDLEWARE = [
