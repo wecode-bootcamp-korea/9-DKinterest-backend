@@ -7,9 +7,13 @@ import re
 
 from django.views.decorators.csrf       import csrf_exempt
 from django.core.exceptions             import ObjectDoesNotExist
-from django.http                        import JsonResponse
-from django.http                        import HttpResponse
+from django.http                        import (
+    JsonResponse,
+    HttpResponse
+)
+from django.http                        import 
 from django.views                       import View
+
 from .utils                             import decorator_login
 from dkinterest.settings                import (
         SECRET_KEY, 
@@ -43,13 +47,12 @@ class SignUpView(View):
                     )
                     return HttpResponse(status=200)
 
-                return JsonResponse({"message":"INVALID_INPUT"}, status=400)
+                return JsonResponse({"message":"INVALID_PASSWORD"}, status=400)
 
-            return JsonResponse({"message":"INVALID_INPUT"}, status=400)
+            return JsonResponse({"message":"INVALID_EMAIL"}, status=400)
 
         except KeyError:
             return JsonResponse({"message": "INVALID_KEYS"}, status=400)
-
 
 class SignInView(View):
     def post(self, request):
@@ -102,7 +105,7 @@ class KakaoLogInView(View):
         access_token    =   jwt.encode(
             {"email": kakao_user_email}, SECRET_KEY, ALGORITHM
         ).decode("utf-8")
-        return JsonResponse({"access_token": access_token}, status=200)
+        return JsonResponse({"access_token" : access_token}, status=200)
 
 class KakaoLogInView(View):
     def get(self, request):
@@ -123,4 +126,4 @@ class KakaoLogInView(View):
 
             return JsonResponse({"token": token}, status=200)
 
-        return JsonResponse({"message": :"SIGN-UP NEEDED"}, status=400) 
+        return JsonResponse({"message" : "SIGN-UP NEEDED"}, status=400) 

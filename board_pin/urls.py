@@ -7,6 +7,7 @@ from board_pin.views import (
     MypagePinView,
     MypageAccountView,
     PinCreateView
+)
 
 urlpatterns = [
     path('/create-board', CreateBoardView.as_view()),

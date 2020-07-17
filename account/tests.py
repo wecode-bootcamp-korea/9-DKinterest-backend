@@ -56,7 +56,7 @@ class SignUpTest(TestCase):
         response = client.post(
             "/account/sign-up", json.dumps(account), content_type="application/json"
         )
-        self.assertEqual(response.json(), {"message": "Email Already exists"})
+        self.assertEqual(response.json(), {"message": "Email Already Exists"})
         self.assertEqual(response.status_code, 400)
 
     def test_post_signupview_invalidpassword(self):
