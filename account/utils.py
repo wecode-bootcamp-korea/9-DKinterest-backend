@@ -9,7 +9,7 @@ from django.http            import (
 from dkinterest.settings    import (
         SECRET_KEY, 
         ALGORITHM
-        )
+)
 
 def decorator_login(func):
     def wrapper(self, request, *args, **kwargs):
@@ -22,6 +22,6 @@ def decorator_login(func):
             return JsonResponse({"Error Message": "INVALID_TOKEN"}, status=400)
         except Account.DoesNotExist:
             return JsonResponse({"Error Message": "ID DOES NOT EXIST"}, status=400)
-        return func(elf, request, *args, **kwargs)
+        return func(self, request, *args, **kwargs)
 
     return wrapper

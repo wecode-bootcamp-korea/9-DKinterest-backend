@@ -7,9 +7,13 @@ import re
 
 from django.views.decorators.csrf       import csrf_exempt
 from django.core.exceptions             import ObjectDoesNotExist
-from django.http                        import JsonResponse
-from django.http                        import HttpResponse
+from django.http                        import (
+    JsonResponse,
+    HttpResponse
+)
+from django.http                        import 
 from django.views                       import View
+
 from .utils                             import decorator_login
 from dkinterest.settings                import (
         SECRET_KEY, 
@@ -46,13 +50,12 @@ class SignUpView(View):
                     )
                     return HttpResponse(status=200)
 
-                return JsonResponse({"message":"INVALID_INPUT"}, status=400)
+                return JsonResponse({"message":"INVALID_PASSWORD"}, status=400)
 
-            return JsonResponse({"message":"INVALID_INPUT"}, status=400)
+            return JsonResponse({"message":"INVALID_EMAIL"}, status=400)
 
         except KeyError:
             return JsonResponse({"message": "INVALID_KEYS"}, status=400)
-
 
 class SignInView(View):
     def post(self, request):
@@ -84,7 +87,6 @@ class KakaoLogInView(View):
             headers                 =       {"Authorization": f"Bearer {access_token}"}
             request_kakao_info      =       requests.get(kakao_url, headers=headers)
             kakao_user_info         =       request_kakao_info.json()
-
             kakao_user_email        =       kakao_user_info["kakao_account"]["email"]
             kakao_user_nickname     =       kakao_user_info["properties"]["nickname"]
             kakao_user_profile_img  =       kakao_user_info["properties"]["profile_image"]
@@ -112,7 +114,7 @@ class InterestSaveView(View):
         data        =       json.loads(request.body)
         user_id     =       request.user.id
         try:
-            selected_interest_list = data["interestId"
+            selected_interest_list = data["interestId"]
         except KeyError:
             return JsonResponse({"message": "INVALID_KEYS"}, status=400)
 

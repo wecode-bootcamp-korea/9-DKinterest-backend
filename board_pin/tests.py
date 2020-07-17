@@ -116,7 +116,7 @@ class PinDetailTest(TestCase):
         self.assertEqual(response.json(),{
             'message' : 'NO_PIN'
         })
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
 
 class MypageAccountTest(TestCase):
     def setUp(self):
@@ -161,12 +161,12 @@ class MypageAccountTest(TestCase):
         headers = {"HTTP_AUTHORIZATION" : "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRnazA4OUBnbWFpbC5jb20ifQ.vXF4ThqZuqYA9Wl3NKEBIdFhqJNyadO5X3pSJFIUF8Q"}
         response = client.get('/boardpin/mypageaccount', **headers, content_type="application/json")
         self.assertEqual(response.json(),{
-            'account' : [{
+            'account' : {
                 'accountId'     : 1,
                 'accountName'   : 'kim',
                 'accountImage'  : 'https://i.pinimg.com/44/48/a7/11118e7efc90286a8dff112211dea9750.jpg',
                 'accountFollow' : 12,
-            }]
+            }
         })
         self.assertEqual(response.status_code, 200)
 
