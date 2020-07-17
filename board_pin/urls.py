@@ -15,5 +15,6 @@ urlpatterns = [
     path('/mypageboard', MypageBoardView.as_view()),
     path('/mypagepin', MypagePinView.as_view()),
     path('/mypageaccount', MypageAccountView.as_view()),
-    path('/pincreate', PinCreateView.as_view())
+    path('/pincreate', PinCreateView.as_view()),
+    path("/homepin", PinListView.as_view())
 ]
