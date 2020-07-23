@@ -1,6 +1,8 @@
 
 import json
 import boto3
+import random
+import requests
 
 from django.views import View
 from django.http  import (
@@ -124,6 +126,32 @@ class PinCreateView(View):
             interest_id         = 1
         )
         return HttpResponse(status=200)
+
+class PinListView(View):
+    @decorator_login
+    def get(self, request):
+        user_id = request.user.id
+        try:
+            if Account.objects.filter(id=user_id).exists():
+                account_interest        =       Account.objects.prefetch_related(
+                    "accountinterest_set__interest__pin_set"
+                ).get(id=user_id)
+                user_interest           =       account_interest.accountinterest_set.all()
+                my_list = []
+                pin_all = []
+
+                for interest in user_interest:
+                    for pin in interest.interest.pin_set.all():
+                        my_list.append({"url": pin.image_url, "link": pin.link})
+                    for m in my_list:
+                        pin_all.append(m)
+
+                random.shuffle(pin_all)
+
+                return JsonResponse({"pin_all": pin_all}, status=200)
+
+        except KeyError:
+            return JsonResponse({"message": "INVALID_KEYS"}, status=400)
 
 class CreateBoardView(View):
     @decorator_login

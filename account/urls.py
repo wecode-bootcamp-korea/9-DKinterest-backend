@@ -12,4 +12,5 @@ urlpatterns = [
     path("/sign-up", SignUpView.as_view()),
     path("/sign-in", SignInView.as_view()),
     path("/kakao_login", KakaoLogInView.as_view()),
+    path("/interest", InterestSaveView.as_view()),
 ]

@@ -41,9 +41,11 @@ class SignUpTest(TestCase):
             "password": "Asdf1234!!",
             "age": 31,
         }
+
         response = client.post(
             "/account/sign-up", json.dumps(account), content_type="application/json"
         )
+
         self.assertEqual(response.status_code, 200)
 
     def test_post_signupview_existingemail(self):
@@ -53,15 +55,17 @@ class SignUpTest(TestCase):
             "password": "Asdf1234!!",
             "age": 31,
         }
+
         response = client.post(
             "/account/sign-up", json.dumps(account), content_type="application/json"
         )
-        self.assertEqual(response.json(), {"message": "Email Already Exists"})
+        self.assertEqual(response.json(), {"message": "Email Already exists"})
         self.assertEqual(response.status_code, 400)
 
     def test_post_signupview_invalidpassword(self):
         client = Client()
         account = {"email": "lyjlyj@gmail.com", "password": "1234", "age": 11}
+
         response = client.post(
             "/account/sign-up", json.dumps(account), content_type="application/json"
         )
@@ -80,6 +84,7 @@ class SignUpTest(TestCase):
     def test_post_signupview_notfound(self):
         client = Client()
         account = {"email": "aaaaa@gmail.com", "password": "Asdf1234!!", "age": 22}
+
         response = client.post(
             "/account/signup", json.dumps(account), content_type="application/json"
         )
@@ -92,9 +97,11 @@ class SignUpTest(TestCase):
             "password": "Asdf1234!!",
             "age": 31,
         }
+
         response = client.post(
             "/account/sign-up", json.dumps(account), content_type="application/json"
         )
+
         self.assertEqual(response.json(), {"message": "INVALID_KEYS"})
         self.assertEqual(response.status_code, 400)
 
@@ -118,9 +125,11 @@ class SignInTest(TestCase):
             "email": "yoojinyoojin@gmail.com",
             "password": "Asdf1234!!",
         }
+
         response = client.post(
             "/account/sign-in", json.dumps(account), content_type="application/json"
         )
+
         self.assertEqual(response.status_code, 200)
 
     def test_post_signinview_fail(self):
@@ -132,6 +141,7 @@ class SignInTest(TestCase):
         response = client.post(
             "/account/sign-in", json.dumps(account), content_type="application/json"
         )
+
         self.assertEqual(response.status_code, 401)
 
     def test_post_signinview_notfound(self):
@@ -143,20 +153,11 @@ class SignInTest(TestCase):
         response = client.post(
             "/account/sign-inn", json.dumps(account), content_type="application/json"
         )
+
         self.assertEqual(response.status_code, 404)
 
 
 class KakaoLogInViewTest(TestCase):
-    def setUp(self):
-        Account.objects.create(
-            email="testtest@gmail.com",
-            nickname="yjyjyjyj",
-            image_url="https://i.pinimg.com/564x/06/8e/83/068e831d76509eceed574b2ae8652cf1.jpg",
-        )
-
-    def tearDown(self):
-        Account.objects.all().delete()
-
     @patch("account.views.requests")
     def test_kakao_signup_success(self, mocked_request):
         class MockedResponse:
@@ -169,12 +170,15 @@ class KakaoLogInViewTest(TestCase):
                     "kakao_account": {"email": "yooyo@gmail.com"},
                 }
                 return user_info
+
         mocked_request.get = MagicMock(return_value=MockedResponse())
+
         client = Client()
-        header = {"Authorization": "48cd941c76c1fb8f30ca5dcc60acafb7"}
-        response = client.post(
-            "/account/kakao_login", content_type="applications/json", **header
-        )
+
+        #        header = {"HTTP_Authorization": "48cd941c76c1fb8f30ca5dcc60acafb7"}
+
+        response = client.post("/account/kakao_login", content_type="applications/json")
+
         self.assertEqual(response.status_code, 200)
 
     @patch("account.views.requests")
@@ -189,12 +193,17 @@ class KakaoLogInViewTest(TestCase):
                     "kakao_account": {"email": "yooyo@gmail.com"},
                 }
                 return user_info
+
         mocked_request.get = MagicMock(return_value=MockedResponse())
+
         client = Client()
-        header = {"Authorization": "48cd941c76c1fb8f30ca5dcc60acafb7"}
+
+        header = {"HTTP_Authorization": "48cd941c76c1fb8f30ca5dcc60acafb7"}
+
         response = client.post(
             "/account/kakao_loginn", content_type="applications/json", **header
         )
+
         self.assertEqual(response.status_code, 404)
 
     @patch("account.views.requests")
@@ -204,14 +213,81 @@ class KakaoLogInViewTest(TestCase):
                 user_info = {
                     "properties": {
                         "nickname": "yalsldf",
-                        "profile_image": "https://i.pinimg.com/750x/b0/ae/92/b0ae920ae9e10a58c8b5176f3181bd73.jpg",
+                        # "profile_image": "https://i.pinimg.com/750x/b0/ae/92/b0ae920ae9e10a58c8b5176f3181bd73.jpg",
                     },
+                    "kakao_account": {"email": "yooyo@gmail.com"},
                 }
                 return user_info
+
         mocked_request.get = MagicMock(return_value=MockedResponse())
+
         client = Client()
+
         header = {"Authorization": "48cd941c76c1fb8f30ca5dcc60acafb7"}
+
         response = client.post(
-            "/account/kakao_loginn", content_type="applications/json", **header
+            "/account/kakao_login", content_type="applications/json", **header
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+
+class InterestSaveViewTest(TestCase):
+    def setUp(self):
+        client = Client()
+        Account.objects.create(
+            id=59, email="dbwlsfda12@naver.com", password="Asdf1234!!", age=22
+        )
+        Interest.objects.create(id=2, title="강아지", image_url="toritori.jpg")
+
+    def tearDown(self):
+        AccountInterest.objects.all().delete()
+
+    def test_interest_post_success(self):
+        client = Client()
+        header = {
+            "HTTP_Authorization": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRid2xzZmRhMTJAbmF2ZXIuY29tIn0.MtgXuZcXktWemphzR_Y5VZzx2c1gM5khTlAm8aF7uJs"
+        }
+
+        account_interest = {"account_id": 59, "interestId": [2]}
+
+        response = client.post(
+            "/account/interest",
+            json.dumps(account_interest),
+            content_type="application/json",
+            **header
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_interest_post_fail(self):
+        client = Client()
+        header = {
+            "HTTP_Authorization": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRid2xzZmRhMTJAbmF2ZXIuY29tIn0.MtgXuZcXktWemphzR_Y5VZzx2c1gM5khTlAm8aF7uJs"
+        }
+
+        # account_interest = {"account_id": 59, "interestId": [2]}
+        account_interest = {"interestId": []}
+
+        response = client.post(
+            "/account/interest",
+            json.dumps(account_interest),
+            content_type="application/json",
+            **header
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_interest_badrequest(self):
+        client = Client()
+        header = {
+            "HTTP_Authorization": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRid2xzZmRhMTJAbmF2ZXIuY29tIn0.MtgXuZcXktWemphzR_Y5VZzx2c1gM5khTlAm8aF7uJs"
+        }
+
+        account_interest = {"account_id": 59, "interestId": [2]}
+
+        response = client.post(
+            "/account/interests",
+            json.dumps(account_interest),
+            content_type="application/json",
+            **header
+        )
+        self.assertEqual(response.status_code, 404)
