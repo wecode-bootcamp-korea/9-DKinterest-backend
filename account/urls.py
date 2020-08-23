@@ -1,11 +1,7 @@
-from django.urls import path
-
 from django.urls import path, include
 
 from .views import (
-    SignUpView,
-    SignInView,
-    KakaoLogInView
+    SignUpView, SignInView, KakaoLogInView, InterestSaveView
 )
 
 urlpatterns = [

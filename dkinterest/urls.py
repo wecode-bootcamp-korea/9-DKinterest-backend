@@ -1,9 +1,7 @@
-from django.urls    import (
-    path,
-    include
-)
+from django.urls import path, include
+from account import urls
 
 urlpatterns = [
-    path('boardpin', include('board_pin.urls')),
-    path('account', include("account.urls"))
+    path("account", include("account.urls")),
+    path("board_pin", include("board_pin.urls")),
 ]
