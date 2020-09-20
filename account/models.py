@@ -10,7 +10,7 @@ from board_pin.models import (
 class Account(models.Model):
     email             = models.EmailField(max_length=100, null=True, unique=True)
     password          = models.CharField(max_length=500, null=True)
-    nickname          = models.CharField(max_length=100, unique=True)
+    nickname          = models.CharField(max_length=100, null=True, unique=True)
     age               = models.IntegerField(null=True)
     name              = models.CharField(max_length=50)
     follower_number   = models.IntegerField(default=0)

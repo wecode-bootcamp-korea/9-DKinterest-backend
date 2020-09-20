@@ -75,14 +75,9 @@ class MypageAccountView(View):
             "accountImage": account_info.image_url,
             "accountFollow": account_info.follower_number,
         }
-        return JsonResponse({"account": account}, status=200)
-
-
-class MypageBoardView(View):
-    @decorator_login
-    def get(self, request):
-        user_id = request.user.id
-        account_info = Account.objects.prefetch_related("board_set__pin").get(
+        
+        # board 
+        board_info = Account.objects.prefetch_related("board_set__pin").get(
             id=user_id
         )
         board = [
@@ -99,13 +94,8 @@ class MypageBoardView(View):
             }
             for board in account_info.board_set.all()
         ]
-        return JsonResponse({"board": board}, status=200)
 
-
-class MypagePinView(View):
-    @decorator_login
-    def get(self, request):
-        user_id = request.user.id
+        # pin
         account_pin = Account.objects.prefetch_related("uploader_pin").get(id=user_id)
         pin = [
             {
@@ -115,7 +105,7 @@ class MypagePinView(View):
             }
             for account in account_pin.uploader_pin.all()
         ]
-        return JsonResponse({"pin": pin}, status=200)
+        return JsonResponse({"account": account, "board":board, "pin":pin}, status=200)
 
 
 class PinCreateView(View):
@@ -186,4 +176,3 @@ class PinListView(View):
 
         except KeyError:
             return JsonResponse({"message": "INVALID_KEYS"}, status=400)
-
